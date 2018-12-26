@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>用户列表</title>
+<link rel="stylesheet" type="text/css"
+	th:href="${'css/bootstrap.min.css'}" media="all" />
+<link rel="stylesheet" type="text/css"
+	th:href="${'css/bootstrap-theme.min.css'}" media="all" />
+<script type="text/javascript" th:href="${'js/jquery.2.0.0.js'}"></script>
+<script type="text/javascript" th:href="${'js/bootstrap.min.js'}"></script>
+<style type="text/css">
+.form-signin {
+	max-width: 330px;
+	padding: 15px;
+	margin: 0 auto;
+}
+
+input {
+	margin-bottom: 3px;
+}
+
+.alert {
+	padding: 8px 35px 8px 14px;
+	margin-bottom: 18px;
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+	background-color: #fcf8e3;
+	border: 1px solid #fbeed5;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+.alert, .alert-heading {
+	color: #c09853;
+}
+
+.alert .close {
+	position: relative;
+	top: -2px;
+	right: -21px;
+	line-height: 18px;
+}
+
+.alert-success {
+	background-color: #dff0d8;
+	border-color: #d6e9c6;
+}
+
+.alert-success, .alert-success .alert-heading {
+	color: #468847;
+}
+
+.alert-danger, .alert-error {
+	background-color: #f2dede;
+	border-color: #eed3d7;
+}
+
+.alert-danger, .alert-error, .alert-danger .alert-heading, .alert-error .alert-heading
+	{
+	color: #b94a48;
+}
+
+.alert-info {
+	background-color: #d9edf7;
+	border-color: #bce8f1;
+}
+
+.alert-info, .alert-info .alert-heading {
+	color: #3a87ad;
+}
+
+.alert-block {
+	padding-top: 14px;
+	padding-bottom: 14px;
+}
+
+.alert-block>p, .alert-block>ul {
+	margin-bottom: 0;
+}
+
+.alert-block p+p {
+	margin-top: 5px;
+}
+</style>
+</head>
+<body>
+	<div class="container">
+
+
+		<form id="loginForm" class="form-signin"
+			th:action = "@{/login}"
+			method="post">
+			<h2 class="form-signin-heading">请登陆</h2>
+			<div class="error" th:if="${param.error}">
+			  Incorrect username or password. Try again.
+			</div>
+			<div class="input-group input-group-lg">
+				<label for="username" class="sr-only">用户名</label> <span
+					class="input-group-addon"><i
+					class="glyphicon glyphicon-user red"></i></span> <input type="text"
+					id="username" name="username" class="form-control"
+					placeholder="请输入用户名" required autofocus>
+			</div>
+			<div class="input-group input-group-lg">
+				<label for="password" class="sr-only">密码</label> <span
+					class="input-group-addon"><i
+					class="glyphicon glyphicon-lock red"></i></span> <input id="password"
+					name="password" type="password" class="form-control"
+					placeholder="请输入密码" required>
+			</div>
+			<button id="loginBtn" class="btn btn-lg btn-primary btn-block"
+				type="submit">登陆</button>
+		</form>
+	</div>
+	<!-- /container -->
+</body>
+</html>
