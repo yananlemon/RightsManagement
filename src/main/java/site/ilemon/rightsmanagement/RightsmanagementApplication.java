@@ -6,11 +6,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @MapperScan("site.ilemon.rightsmanagement.dao")
-public class RightsmanagementApplication {
+public class RightsmanagementApplication{
 
 	public static void main(String[] args) {
 		SpringApplication.run(RightsmanagementApplication.class, args);
 	}
 
+	
 }
 

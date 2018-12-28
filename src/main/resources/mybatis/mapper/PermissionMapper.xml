@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.ilemon.rightsmanagement.dao.IPermissionDao">
+	<resultMap id="permissionMap" type="site.ilemon.rightsmanagement.entity.Permission" >
+		<id column="permission_code" property="permissionCode" jdbcType="VARCHAR" />
+		<result column="parent_permission_code" property="parentPermissionCode" jdbcType="VARCHAR" />
+		<result column="permission_type" property="permissionType" jdbcType="VARCHAR" />
+		<result column="permission_text" property="permissionText" jdbcType="VARCHAR" />
+		<result column="permission_url" property="permissionUrl" jdbcType="VARCHAR" />
+		
+	</resultMap>
+	
+	<select id="listPermissionsByUserId" resultMap="permissionMap">
+		SELECT 
+			* 
+		FROM t_permissions 
+		WHERE 
+			permission_code IN (
+				SELECT 
+					permission_code 
+				FROM t_user_role 
+				WHERE role_id = (
+					SELECT 
+						role_id 
+					FROM 
+						t_user_role 
+					WHERE 
+						user_id = 2
+				)
+		)
+	</select>
+	
+</mapper>

@@ -1,19 +1,40 @@
 package site.ilemon.rightsmanagement.controller;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+
+import site.ilemon.rightsmanagement.entity.Permission;
+import site.ilemon.rightsmanagement.entity.User;
+import site.ilemon.rightsmanagement.service.IUserService;
 
 @Controller
-@RequestMapping("/")
 public class IndexController {
 
-	@GetMapping
-	public String redirectUserPage(){
-		return "userlist";
+	@Autowired
+	private IUserService service;
+	
+	@GetMapping("/index")
+	public String index(HttpServletRequest request,Model model){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if( auth != null && auth.getPrincipal() instanceof User){
+			int userId = ((User)auth.getPrincipal()).getId();
+			List<Permission> permissions = service.listPermissionOfUser(userId);
+			//model.addAttribute("permissions", permissions);
+			request.getSession().setAttribute("permissions", permissions);
+			request.getSession().setAttribute("aaa", "aaaaaaaa");
+		}
+		return "index";
 	}
 	
-	@GetMapping("login")
+	@GetMapping("/login")
 	public String login(){
 		return "login";
 	}

@@ -11,54 +11,10 @@
 <script type="text/javascript" th:href="${'/js/bootstrap.min.js'}"></script>
 </head>
 <body>
-	<nav class="navbar navbar-default" role="navigation">
-		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse"
-				data-target="#bs-example-navbar-collapse-1">
-				<span class="sr-only">Toggle navigation</span> <span
-					class="icon-bar"></span> <span class="icon-bar"></span> <span
-					class="icon-bar"></span>
-			</button>
-			<a href="#" class="navbar-brand">权限管理系统</a>
-		</div>
-		<div class="collapse navbar-collapse"
-			id="bs-example-navbar-collapse-1">
-			<!--嵌套下拉菜单-->
-			<ul class="nav navbar-nav">
-				<li class="active"><a href="#">Link</a></li>
-				<li><a href="#">权限管理</a></li>
-				<li><a href="#">班级管理</a></li>
-				<li><a href="#">教室管理</a></li>
-				<li class="dropdown"><a href="#" class="dropdown-toggle"
-					data-toggle="dropdown"> 排课<b class="caret"></b>
-				</a>
-					<ul class="dropdown-menu">
-						<li><a href="#">Action</a></li>
-						<li><a href="#">Action</a></li>
-						<li><a href="#">Action</a></li>
-						<li><a href="#">Action</a></li>
-					</ul></li>
-				<li class="dropdown"><a href="#" class="dropdown-toggle"
-					data-toggle="dropdown"> 机房管理<b class="caret"></b>
-				</a>
-					<ul class="dropdown-menu">
-						<li><a href="#">查看机房</a></li>
-						<li><a href="#">新增机房</a></li>
-					</ul></li>
-			</ul>
-
-			<p class="navbar-text navbar-right">
-				欢迎<a href="#" class="navbar-link">admin!</a>
-			</p>
-			<!--嵌套表单-->
-			<form th:action="@{/logout}" method="post">
-				<button type="button" class="btn btn-default">
-					<span class="glyphicon glyphicon-star" aria-hidden="true"></span>登出
-				</button>
-			</form>
-			<!---->
-		</div>
-	</nav>
+	<div th:include="header :: head"></div>
+	<form th:action="@{/user/redirectAddUser}" method = "get">
+		<button type="submit" class="btn btn-primary">新增用户</button>
+	</form>
 	<table class="table table-bordered">
 		<thead>
 			<tr>

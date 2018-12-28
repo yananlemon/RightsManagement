@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>用户列表</title>
+<!-- 
+<link rel="stylesheet" type="text/css"
+	th:href="${'/css/bootstrap.min.css'}" media="all" />
+<link rel="stylesheet" type="text/css"
+	th:href="${'/css/bootstrap-theme.min.css'}" media="all" />
+<script type="text/javascript" th:href="${'/js/jquery.2.0.0.js'}"></script>
+<script type="text/javascript" th:href="${'/js/bootstrap.min.js'}"></script>
+ -->
+<!-- 新 Bootstrap 核心 CSS 文件 -->
+<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+ 
+<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+ 
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<header th:fragment="head"> 
+		<nav class="navbar navbar-default" role="navigation">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse"
+				data-target="#bs-example-navbar-collapse-1">
+				<span class="sr-only">Toggle navigation</span> <span
+					class="icon-bar"></span> <span class="icon-bar"></span> <span
+					class="icon-bar"></span>
+			</button>
+			<a href="#" class="navbar-brand">权限管理系统</a>
+		</div>
+		<div class="collapse navbar-collapse"
+			id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav" th:each="permission:${session.permissions}">
+				<li class="dropdown" th:if="${permission.parentPermissionCode=='root'}">
+					<a href="#" class="dropdown-toggle"  
+					data-toggle="dropdown">
+					<span th:text="${permission.permissionText}"></span>
+					<b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li th:each="cPermission:${session.permissions}">
+							<a th:if="${cPermission.parentPermissionCode==permission.permissionCode}" th:href="${cPermission.permissionUrl}" th:text="${cPermission.permissionText}"></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<p class="navbar-text navbar-right">
+				欢迎<a href="#" class="navbar-link" th:text=${'username'}></a>
+			</p>
+			<form th:action="@{/logout}" method="post">
+				<button type="button" class="btn btn-default">
+					<span class="glyphicon glyphicon-star" aria-hidden="true"></span>登出
+				</button>
+			</form>
+			<!---->
+		</div>
+	</nav>
+	</header>
+	
+</body>
+</html>

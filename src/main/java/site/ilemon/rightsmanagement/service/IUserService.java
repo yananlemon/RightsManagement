@@ -2,6 +2,7 @@ package site.ilemon.rightsmanagement.service;
 
 import java.util.List;
 
+import site.ilemon.rightsmanagement.entity.Permission;
 import site.ilemon.rightsmanagement.entity.User;
 
 /**
@@ -20,4 +21,6 @@ public interface IUserService {
     public int delete(Integer id);
 
 	public User getUserByName(String username);
+	
+	public List<Permission> listPermissionOfUser(int userId);
 }

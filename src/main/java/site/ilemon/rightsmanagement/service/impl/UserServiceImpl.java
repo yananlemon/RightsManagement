@@ -1,6 +1,8 @@
 package site.ilemon.rightsmanagement.service.impl;
 
+import site.ilemon.rightsmanagement.dao.IPermissionDao;
 import site.ilemon.rightsmanagement.dao.IUserDao;
+import site.ilemon.rightsmanagement.entity.Permission;
 import site.ilemon.rightsmanagement.entity.User;
 import site.ilemon.rightsmanagement.service.IUserService;
 
@@ -18,11 +20,20 @@ public class UserServiceImpl implements IUserService {
 
 	@Autowired
     private IUserDao userDao;
+	
+	@Autowired
+    private IPermissionDao permissionDao;
+	
+	public List<Permission> listPermissionOfUser(int userId){
+		return permissionDao.listPermissionsByUserId(userId);
+	}
 
 	/**
 	 * 新增用户
 	 */
     public int insert(User user) {
+    	if( user.getPassword() == null )
+    		user.setPassword("123456");
     	final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     	String password = passwordEncoder.encode(user.getPassword());
     	user.setPassword(password);
