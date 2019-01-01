@@ -15,5 +15,46 @@
 <body>
 	<div th:include="header :: head"></div>
 	<h2>welcome!</h2>
+	<div id="container" style="height: 400px"></div>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+	<script th:inline="javascript">
+	    var message = [[${list}]];
+	    console.log(message);
+	    var xArray = new Array();
+	    var yArray = new Array();
+	    for(var i = 0; i< message.length; i++){
+	    	xArray[i] = message[i].createTime;
+	    	yArray[i] = message[i].count;
+	    }
+	    var dom = document.getElementById("container");
+		var myChart = echarts.init(dom);
+		var app = {};
+		option = null;
+		option = {
+			title: {
+                text: '按天统计创建用户数量'
+            },
+            tooltip: {},
+            legend: {
+                data:['数量']
+            },
+		    xAxis: {
+		        type: 'category',
+		        data: xArray
+		    },
+		    yAxis: {
+		        type: 'value'
+		    },
+		    series: [{
+		        data: yArray,
+		        type: 'line'
+		    }]
+		};
+		;
+		if (option && typeof option === "object") {
+		    myChart.setOption(option, true);
+		}
+	</script>
+	
 </body>
 </html>

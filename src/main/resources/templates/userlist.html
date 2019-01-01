@@ -3,19 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <title>用户列表</title>
-<link rel="stylesheet" type="text/css"
-	th:href="${'/css/bootstrap.min.css'}" media="all" />
-<link rel="stylesheet" type="text/css"
-	th:href="${'/css/bootstrap-theme.min.css'}" media="all" />
-<script type="text/javascript" th:href="${'/js/jquery.2.0.0.js'}"></script>
-<script type="text/javascript" th:href="${'/js/bootstrap.min.js'}"></script>
+
+<style>
+.center {
+  text-align: center;
+}
+.right {
+  text-align: right;
+  margin-right: 10px;
+}
+
+</style>
 </head>
 <body>
 	<div th:include="header :: head"></div>
-	<form th:action="@{/user/redirectAddUser}" method = "get">
-		<button type="submit" class="btn btn-primary">新增用户</button>
-	</form>
-	<table class="table table-bordered">
+	<div class="right">
+		<form th:action="@{/user/redirectAddUser}" method = "get">
+			<button type="submit" class="btn btn-primary">新增用户</button>
+		</form>
+	
+	</div>
+	<div style="margin-left: 10px;margin-right: 10px;">
+		<table class="table table-bordered" >
 		<thead>
 			<tr>
 				<th>用户编号</th>
@@ -27,7 +36,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr th:each="user : ${users}">
+			<tr th:each="user : ${users.list}">
 				<td th:text="${user.id}"></td>
 				<td th:text="${user.username}"></td>
 				<td th:text="${user.email}"></td>
@@ -37,15 +46,31 @@
 			</tr>
 		</tbody>
 	</table>
-	<ul class="pagination pagination-lg">
-    <li><a href="#">&laquo;</a></li>
-    <li><a href="#">1</a></li>
-    <li><a href="#">2</a></li>
-    <li><a href="#">3</a></li>
-    <li><a href="#">4</a></li>
-    <li><a href="#">5</a></li>
-    <li><a href="#">&raquo;</a></li>
-</ul>
+	</div>
+	
+	<div class="center">
+		<nav aria-label="...">
+		<ul class="pagination justify-content-center pagination-lg">
+		 	<li th:class="${users.firstPage} ? 'disabled':''" style="display:inline">
+                <span th:if="${users.firstPage}">←←首页</span>
+                <a th:if="${not users.firstPage}" th:href="@{'users?currentPage=1'}">←首页</a>
+            </li>
+		    <li class="page-item" th:each="i : ${#numbers.sequence(1,users.totalPage)}"
+		    th:class="(${i}==${users.currentPage})? 'active' : ''" style="display:inline">
+		    	<span th:if='${i}==${users.currentPage}' th:text='${i}'></span>
+                    <a th:if='${i}!=${users.currentPage}' th:href="@{'users?currentPage=' + ${i}}">
+                        <span th:text='${i}'></span>
+                    </a>
+		    </li>
+		    <li th:class="${users.lastPage} ? 'disabled':''" style="display:inline">
+                <span th:if="${users.lastPage}">尾页➝</span>
+                <a th:if="${not users.lastPage}" th:href="@{'users?currentPage=' + ${users.totalPage}}">尾页➝</a>
+            </li>
+	  </ul>
+	</nav>
+	</div>
+	
+
 	
 </body>
 </html>

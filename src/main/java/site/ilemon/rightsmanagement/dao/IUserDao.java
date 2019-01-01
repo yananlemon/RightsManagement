@@ -1,7 +1,9 @@
 package site.ilemon.rightsmanagement.dao;
-import site.ilemon.rightsmanagement.entity.*;
-
 import java.util.List;
+import java.util.Map;
+
+import site.ilemon.rightsmanagement.entity.User;
+import site.ilemon.rightsmanagement.util.SearchCondition;
 
 /**
  * 用户数据层接口
@@ -18,11 +20,15 @@ public interface IUserDao {
 
     public int update(User user);
 
-    public List<User> listUser();
+    public Integer countUser(SearchCondition searchCondition);
+    
+    public List<User> listUser(SearchCondition searchCondition);
 
     public User getUserById();
 
     public int delete(Integer id);
     
     public User getUserByName(String username);
+    
+    public List<Map<String,Object>> getFreqOfCreateUser();
 }

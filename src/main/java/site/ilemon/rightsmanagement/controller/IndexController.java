@@ -1,6 +1,7 @@
 package site.ilemon.rightsmanagement.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,9 +28,10 @@ public class IndexController {
 		if( auth != null && auth.getPrincipal() instanceof User){
 			int userId = ((User)auth.getPrincipal()).getId();
 			List<Permission> permissions = service.listPermissionOfUser(userId);
-			//model.addAttribute("permissions", permissions);
 			request.getSession().setAttribute("permissions", permissions);
-			request.getSession().setAttribute("aaa", "aaaaaaaa");
+			request.getSession().setAttribute("username", ((User)auth.getPrincipal()).getUsername());
+			List<Map<String,Object>> list = service.getFreqOfCreateUser();
+			model.addAttribute("list", list);
 		}
 		return "index";
 	}

@@ -3,6 +3,7 @@ package site.ilemon.rightsmanagement.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -10,9 +11,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import site.ilemon.rightsmanagement.entity.User;
 import site.ilemon.rightsmanagement.service.IUserService;
+import site.ilemon.rightsmanagement.util.Pagination;
+import site.ilemon.rightsmanagement.util.SearchCondition;
 
 @Controller
 @RequestMapping("/user")
@@ -22,11 +26,10 @@ public class UserController {
 	private IUserService service;
 	
 	@GetMapping("/users")
-	public String listUser(Model model){
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		List<User> users =service.listUser();
+	public String listUser(@RequestParam(value="currentPage",defaultValue = "1") Integer currentPage,Model model){
+		SearchCondition condition = new SearchCondition(currentPage);
+		Pagination<User> users =service.listUser(condition);
 		model.addAttribute("users", users);
-		model.addAttribute("username", ((User)auth.getPrincipal()).getUsername());
 		return "userlist";
 	}
 	

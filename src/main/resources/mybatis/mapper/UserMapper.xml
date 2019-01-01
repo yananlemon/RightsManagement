@@ -15,8 +15,25 @@
 		
 	</resultMap>
 	
-	<select id="listUser" resultMap="userMap">
+	<select id="listUser" resultMap="userMap" parameterType="site.ilemon.rightsmanagement.util.SearchCondition">
 		select 	* from t_user
+		<where>
+			<if test="searchKeyword != null">
+				username like "%"#{searchKeyword}"%"
+			</if>
+		</where>
+		limit #{startRow},#{endRow}
+	</select>
+	
+	<select id="countUser" 
+		resultType="java.lang.Integer" 
+		parameterType="site.ilemon.rightsmanagement.util.SearchCondition">
+		select 	count(*) from t_user
+		<where>
+			<if test="searchKeyword != null">
+				username like "%"#{searchKeyword}"%"
+			</if>
+		</where>
 	</select>
 	
 	<select id="getUserByName" resultMap="userMap">
@@ -27,6 +44,10 @@
 		insert into t_user(username,password,email,mobile,address)
 		values(#{username},#{password},#{email},#{mobile},#{address})
 	</insert>
+	
+	<select id="getFreqOfCreateUser" resultType="java.util.Map">
+		select count(*) count,DATE_FORMAT(create_time, '%Y-%m-%d') as createTime  from t_user group by create_time
+	</select>
 	
 	
 </mapper>

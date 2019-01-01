@@ -5,10 +5,18 @@ import site.ilemon.rightsmanagement.dao.IUserDao;
 import site.ilemon.rightsmanagement.entity.Permission;
 import site.ilemon.rightsmanagement.entity.User;
 import site.ilemon.rightsmanagement.service.IUserService;
+import site.ilemon.rightsmanagement.util.Pagination;
+import site.ilemon.rightsmanagement.util.SearchCondition;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,9 +53,17 @@ public class UserServiceImpl implements IUserService {
         return 0;
     }
 
-    public List<User> listUser() {
-
-        return userDao.listUser();
+    public Pagination<User> listUser(SearchCondition searchCondition) {
+    	try {
+    		Integer count = userDao.countUser(searchCondition);
+    		List<User> users = userDao.listUser(searchCondition);
+    		Pagination<User> rs = new Pagination<User>(searchCondition.getCurrPage(),count,users);
+    		return rs;
+    		
+    	}catch (Exception e) {
+    		e.printStackTrace();
+    	}
+    	return null;
     }
 
     public User getUserById() {
@@ -61,5 +77,16 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public User getUserByName(String username) {
 		return userDao.getUserByName(username);
+	}
+
+	@Override
+	public Page<User> listUser2(SearchCondition searchCondition) {
+		
+		return null;
+	}
+
+	@Override
+	public List<Map<String,Object>> getFreqOfCreateUser() {
+		return userDao.getFreqOfCreateUser();
 	}
 }

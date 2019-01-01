@@ -2,6 +2,8 @@ package site.ilemon.rightsmanagement;
 
 import static org.junit.Assert.*;
 
+import java.util.Map;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import site.ilemon.rightsmanagement.entity.User;
 import site.ilemon.rightsmanagement.service.IUserService;
+import site.ilemon.rightsmanagement.util.SearchCondition;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -20,7 +23,16 @@ public class RightsmanagementApplicationTests {
 	
 	@Test
 	public void contextLoads() {
-		System.out.println(service.listUser());
+		SearchCondition condition = new SearchCondition(1);
+		condition.setCurrPage(1);
+		condition.setStartRow(0);
+		condition.setEndRow(10);
+		condition.setSearchKeyword("an");
+		System.out.println(service.listUser(condition));
+	}
+	@Test
+	public void  testGetFreqOfCreateUser() {
+		System.out.println(service.getFreqOfCreateUser());
 	}
 	
 	@Test
