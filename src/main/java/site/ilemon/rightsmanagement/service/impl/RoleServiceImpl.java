@@ -54,7 +54,7 @@ public class RoleServiceImpl implements IRoleService {
 								);
 						cMenu.setNodeId(id++);
 						if(permissionsOfRole.contains(child)){
-							menu.setState(new State(true,true));
+							cMenu.setState(new State(true,true));
 						}
 						
 						menu.addChild(cMenu);
