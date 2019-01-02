@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>分配权限</title>
+<link
+	href="https://cdn.bootcss.com/bootstrap-treeview/1.2.0/bootstrap-treeview.min.css"
+	rel="stylesheet">
+</head>
+
+<body>
+	<div th:include="header :: head"></div>
+	<div id="tree"></div>
+	<script src="/js/bootstrap-treeview.js"></script>
+	<script th:inline="javascript">
+	    var message = [[${permissions}]];
+	    console.log(message);
+	    $('#tree').treeview(
+	    		{
+	    			levels: 1,
+	        		expandIcon: 'glyphicon glyphicon-chevron-right',
+		    		collapseIcon: 'glyphicon glyphicon-chevron-down',
+		    		nodeIcon: 'glyphicon glyphicon glyphicon-th-list',
+		    		selectedBackColor: false,
+		    		selectedColor: '#337AB7',
+		    		showCheckbox: 1,//这里之所以写1，是因为我引得js源码里定义1为true
+		    		multiSelect: 1,//这里之所以写1，是因为我引得js源码里定义1为true
+		    		data: message,
+		    		onNodeChecked: function(event, node) { //选中节点
+	                       var selectNodes = getChildNodeIdArr(node); //获取所有子节点
+	                       
+	                       for( var i = 0; i < selectNodes.length; i++){
+	                    	   selectNodes[i].state.selected = true;
+	                    	   selectNodes[i].nodeid = i+1;
+	                       }
+	                       if (selectNodes) { //子节点不为空，则选中所有子节点
+	                           $('#tree').treeview('checkNode', [selectNodes, { silent: true }]);
+	                       }
+	                       var parentNode = $("#tree").treeview("getNode", node.parentId);
+	                       setParentNodeCheck(node);
+	    		       },
+                   onNodeUnchecked: function(event, node) { //取消选中节点
+                       var selectNodes = getChildNodeIdArr(node); //获取所有子节点
+                       for( var i = 0; i < selectNodes.length; i++){
+                    	   selectNodes[i].state.selected = false;
+                       }
+                       if (selectNodes) { //子节点不为空，则取消选中所有子节点
+                           $('#tree').treeview('uncheckNode', [selectNodes, { silent: true }]);
+                       }
+                   }
+	    		}
+	    );
+	   
+	
+	    function getChildNodeIdArr(node) {
+	        var ts = [];
+	        if (node.nodes) {
+	            for (x in node.nodes) {
+	                ts.push(node.nodes[x]);
+	                if (node.nodes[x].nodes) {
+	                    var getNodeDieDai = getChildNodeIdArr(node.nodes[x]);
+	                    for (j in getNodeDieDai) {
+	                        ts.push(getNodeDieDai[j]);
+	                    }
+	                }
+	            }
+	        } else {
+	            ts.push(node);
+	        }
+	        return ts;
+	    }
+
+		
+	    function setParentNodeCheck(node) {
+	        var parentNode = $("#tree").treeview("getNode", node.parentCode);
+	        if (parentNode.nodes) {
+	            var checkedCount = 0;
+	            for (x in parentNode.nodes) {
+	                if (parentNode.nodes[x].state.checked) {
+	                    checkedCount ++;
+	                } else {
+	                    break;
+	                }
+	            }
+	            if (checkedCount === parentNode.nodes.length) {
+	                $("#tree").treeview("checkNode", parentNode.code);
+	                setParentNodeCheck(parentNode);
+	            }
+	        }
+	    }
+	    
+</script>
+
+</body>
+</html>

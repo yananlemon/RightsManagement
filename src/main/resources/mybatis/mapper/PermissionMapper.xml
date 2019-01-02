@@ -25,9 +25,28 @@
 					FROM 
 						t_user_role 
 					WHERE 
-						user_id = 2
+						user_id = #{id}
 				)
 		)
+	</select>
+	
+	<select id="listPermissionsByRoleId" resultMap="permissionMap">
+		SELECT 
+			* 
+		FROM t_permissions 
+		WHERE 
+			permission_code IN (
+				SELECT 
+					permission_code 
+				FROM t_role_permissions
+				WHERE role_id = #{id}
+		)
+	</select>
+	
+	<select id="listPermissions" resultMap="permissionMap">
+		SELECT 
+			* 
+		FROM t_permissions
 	</select>
 	
 </mapper>

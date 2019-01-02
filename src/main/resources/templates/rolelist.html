@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>角色列表</title>
+
+<style>
+.center {
+  text-align: center;
+}
+.right {
+  text-align: right;
+  margin-right: 10px;
+}
+
+</style>
+</head>
+<body>
+	<div th:include="header :: head"></div>
+	<div class="right">
+		<form th:action="@{/user/redirectAddUser}" method = "get">
+			<button type="submit" class="btn btn-primary">新增用户</button>
+		</form>
+	
+	</div>
+	<div style="margin-left: 10px;margin-right: 10px;">
+		<table class="table table-bordered" >
+		<thead>
+			<tr>
+				<th>角色编号</th>
+				<th>角色名称</th>
+				<th>角色描述</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="role : ${roles.list}">
+				<td th:text="${role.id}"></td>
+				<td th:text="${role.roleName}"></td>
+				<td th:text="${role.desc}"></td>
+				<td><a th:href="@{'/permission/permission?roleId=' + ${role.id}}">分配权限</a></td>
+			</tr>
+		</tbody>
+	</table>
+	</div>
+	
+	<div class="center">
+		<nav aria-label="...">
+		<ul class="pagination justify-content-center pagination-lg">
+		 	<li th:class="${roles.firstPage} ? 'disabled':''" style="display:inline">
+                <span th:if="${roles.firstPage}">←首页</span>
+                <a th:if="${not roles.firstPage}" th:href="@{'roles?currentPage=1'}">←首页</a>
+            </li>
+		    <li class="page-item" th:each="i : ${#numbers.sequence(1,roles.totalPage)}"
+		    th:class="(${i}==${roles.currentPage})? 'active' : ''" style="display:inline">
+		    	<span th:if='${i}==${roles.currentPage}' th:text='${i}'></span>
+                    <a th:if='${i}!=${roles.currentPage}' th:href="@{'roles?currentPage=' + ${i}}">
+                        <span th:text='${i}'></span>
+                    </a>
+		    </li>
+		    <li th:class="${roles.lastPage} ? 'disabled':''" style="display:inline">
+                <span th:if="${roles.lastPage}">尾页➝</span>
+                <a th:if="${not roles.lastPage}" th:href="@{'roles?currentPage=' + ${roles.totalPage}}">尾页➝</a>
+            </li>
+	  </ul>
+	</nav>
+	</div>
+	
+
+	
+</body>
+</html>

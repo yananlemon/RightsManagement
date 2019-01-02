@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.ilemon.rightsmanagement.dao.IRoleDao">
+	<resultMap id="roleMap" type="site.ilemon.rightsmanagement.entity.Role" >
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="role_name" property="roleName" jdbcType="VARCHAR" />
+		<result column="role_desc" property="desc" jdbcType="VARCHAR" />
+		<result column="flag" property="flag" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="DATE" />
+		<result column="create_by" property="createBy" jdbcType="VARCHAR" />
+		<result column="update_time" property="updateTime" jdbcType="DATE" />
+		<result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+		
+	</resultMap>
+	
+	<select id="listRole" resultMap="roleMap" parameterType="site.ilemon.rightsmanagement.util.SearchCondition">
+		select 	* from t_role
+		<where>
+			<if test="searchKeyword != null">
+				role_name like "%"#{searchKeyword}"%"
+			</if>
+		</where>
+		limit #{startRow},#{endRow}
+	</select>
+	
+	<select id="countRole" 
+		resultType="java.lang.Integer" 
+		parameterType="site.ilemon.rightsmanagement.util.SearchCondition">
+		select 	count(*) from t_role
+		<where>
+			<if test="searchKeyword != null">
+				role_name like "%"#{searchKeyword}"%"
+			</if>
+		</where>
+	</select>
+	
+</mapper>

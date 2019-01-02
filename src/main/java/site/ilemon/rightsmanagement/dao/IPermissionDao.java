@@ -11,5 +11,10 @@ public interface IPermissionDao {
 
 
     public List<Permission> listPermissionsByUserId(Integer id);
+    
+    
+    public List<Permission> listPermissions();
+    
+    public List<Permission> listPermissionsByRoleId(Integer id);
 
 }
