@@ -5,10 +5,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import site.ilemon.rightsmanagement.dao.IPermissionDao;
 import site.ilemon.rightsmanagement.dao.IRoleDao;
 import site.ilemon.rightsmanagement.entity.Permission;
+import site.ilemon.rightsmanagement.entity.PermissionInput;
 import site.ilemon.rightsmanagement.entity.PermissionMenu;
 import site.ilemon.rightsmanagement.entity.Role;
 import site.ilemon.rightsmanagement.entity.State;
@@ -23,11 +25,11 @@ import site.ilemon.rightsmanagement.util.SearchCondition;
 public class RoleServiceImpl implements IRoleService {
 
 	@Autowired
-    private IRoleDao roleDao;
-	
+	private IRoleDao roleDao;
+
 	@Autowired
-    private IPermissionDao permissionDao;
-	
+	private IPermissionDao permissionDao;
+
 
 	@Override
 	public List<PermissionMenu> getPermissionOfRole(int roleId) {
@@ -56,13 +58,13 @@ public class RoleServiceImpl implements IRoleService {
 						if(permissionsOfRole.contains(child)){
 							cMenu.setState(new State(true,true));
 						}
-						
+
 						menu.addChild(cMenu);
 					}
 				}
 				rs.add(menu);
 			}
-			
+
 		}
 		return rs;
 	}
@@ -71,14 +73,29 @@ public class RoleServiceImpl implements IRoleService {
 	@Override
 	public Pagination<Role> listRole(SearchCondition searchCondition) {
 		try {
-    		Integer count = roleDao.countRole(searchCondition);
-    		List<Role> users = roleDao.listRole(searchCondition);
-    		Pagination<Role> rs = new Pagination<Role>(searchCondition.getCurrPage(),count,users);
-    		return rs;
-    		
-    	}catch (Exception e) {
-    		e.printStackTrace();
-    	}
-    	return null;
+			Integer count = roleDao.countRole(searchCondition);
+			List<Role> users = roleDao.listRole(searchCondition);
+			Pagination<Role> rs = new Pagination<Role>(searchCondition.getCurrPage(),count,users);
+			return rs;
+
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public int savePerission(PermissionInput param) throws Exception{
+		int rs = 0;
+		int deleteAff = roleDao.deleteRelation(param.getRoleId());
+		if( deleteAff < 0 )
+			throw new Exception();
+		int insertAff = roleDao.insertRelation(param);
+		if( insertAff < 0 )
+			throw new Exception();
+		rs = 1;
+		return rs;
+
 	}
 }

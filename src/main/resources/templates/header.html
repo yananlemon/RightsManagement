@@ -15,22 +15,33 @@
 </head>
 <body>
 	<header th:fragment="head"> 
-	
 	<nav class="navbar navbar-inverse" role="navigation">
 	<div class="container-fluid"> 
 	    <div class="navbar-header">
+	    	<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
 	        <a href="/index" class="navbar-brand">权限管理系统</a>
 	    </div>
-    	<div>
+    	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 	        <!--向左对齐-->
-	        <ul class="nav navbar-nav navbar-left" th:each="permission:${session.permissions}">
+	        <ul class="nav navbar-nav navbar-left" 
+	        	th:each="permission:${session.permissions}"
+	        	th:object="${permission}"
+      			th:if="${permission.parentPermissionCode=='root'}">
 	            <li class="dropdown" th:if="${permission.parentPermissionCode=='root'}">
 					<a href="#" class="dropdown-toggle"  
 					data-toggle="dropdown">
 					<span th:text="${permission.permissionText}"></span>
 					<b class="caret"></b></a>
 					<ul class="dropdown-menu">
-						<li th:each="cPermission:${session.permissions}">
+						<li 
+							th:each="cPermission:${session.permissions}"
+							th:object="${cPermission}"
+      						th:if="${cPermission.parentPermissionCode==permission.permissionCode}">
 							<a th:if="${cPermission.parentPermissionCode==permission.permissionCode}" th:href="${cPermission.permissionUrl}" th:text="${cPermission.permissionText}"></a>
 						</li>
 					</ul>

@@ -3,14 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <title>分配权限</title>
-	<link href="/css/bootstrap-treeview.css" rel="stylesheet">
-	
+<link href="/css/bootstrap-treeview.css" rel="stylesheet">
+<meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 
 <body>
 	<div th:include="header :: head"></div>
 	<script src="/js/bootstrap-treeview.js"></script>
 	<div id="tree"></div>
+	<input id="roleId" type="hidden" th:value="${roleId}">
+	<input id="userId" type="hidden" th:value="${userId}">
+	<button type="submit" class="btn btn-primary" onclick="save()">保存</button>
+	<button type="submit" class="btn btn-primary" onclick="">取消</button>
 	<script th:inline="javascript">
 	    var message = [[${permissions}]];
 	    console.log(message);
@@ -24,13 +29,94 @@
 		    		selectedColor: '#337AB7',
 		    		showCheckbox: 1,//这里之所以写1，是因为我引得js源码里定义1为true
 		    		multiSelect: 1,//这里之所以写1，是因为我引得js源码里定义1为true
-		    		data: message
+		    		data: message,
+		    		onNodeChecked: function(event, node) { //选中节点
+	                       var selectNodes = getChildNodeIdArr(node); //获取所有子节点
+						   for(var i = 0; i < selectNodes.length; i++){
+								 $("#tree").treeview("checkNode", selectNodes[i].nodeId);
+						   }
+	          
+	                       var parentNode = $("#tree").treeview("getNode", node.parentId);
+	                       setParentNodeCheck(node);
+	    		       },
+                   onNodeUnchecked: function(event, node) { //取消选中节点
+                       var selectNodes = getChildNodeIdArr(node); //获取所有子节点
+						   for(var i = 0; i < selectNodes.length; i++){
+								 $("#tree").treeview("uncheckNode", selectNodes[i].nodeId);
+						   }
+	          
+                     
+                   }
 	    		}
 	    );
+	    function getChildNodeIdArr(node) {
+	        var ts = [];
+	        if (node.nodes) {
+	            for (x in node.nodes) {
+	                ts.push(node.nodes[x]);
+	                if (node.nodes[x].nodes) {
+	                    var getNodeDieDai = getChildNodeIdArr(node.nodes[x]);
+	                    for (j in getNodeDieDai) {
+	                        ts.push(getNodeDieDai[j]);
+	                    }
+	                }
+	            }
+	        } else {
+	            ts.push(node);
+	        }
+	        return ts;
+	    }
+
+		
+	    function setParentNodeCheck(node) {
+	        var parentNode = $("#tree").treeview("getNode", node.parentId);
+	        if (parentNode.nodes) {
+	            var checkedCount = 0;
+	            for (x in parentNode.nodes) {
+	                if (parentNode.nodes[x].state.checked) {
+	                    checkedCount ++;
+	                } else {
+	                    break;
+	                }
+	            }
+	            if (checkedCount === parentNode.nodes.length) {
+	                $("#tree").treeview("checkNode", parentNode.nodeId);
+	                setParentNodeCheck(parentNode);
+	            }
+	        }
+	    }
 	   
-	
-	   
-	    
+	    function save(){
+			var array = $('#tree').treeview('getChecked');
+			var data = new Object();
+			data.roleId=$("#roleId").val();
+			var codeArray = new Array();
+			for( n in array){
+				codeArray.push(array[n].code);
+			}
+			data.codes=codeArray;
+			console.log(data);
+			$.ajax({
+				url:'permission',
+				type:'PUT',
+				contentType: "application/json; charset=utf-8",
+		        data: JSON.stringify(data),
+		        dataType: "json",
+		        beforeSend: function(request) {
+		        	var token = $("meta[name='_csrf']").attr("content");
+		        	var header = $("meta[name='_csrf_header']").attr("content");
+					request.setRequestHeader(header, token);
+                },
+		        success: function (data) {
+		        	alert("修改成功");
+		        	var roleId = data.roleId;
+	                window.location.href="permission?roleId="+roleId;
+		        },
+		        error: function (message) {
+		            alert("error");
+		        }
+			});
+		}
 	    
 </script>
 

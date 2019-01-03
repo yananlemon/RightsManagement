@@ -34,4 +34,16 @@
 		</where>
 	</select>
 	
+	<delete id="deleteRelation">
+		delete from t_role_permissions where role_id = #{roleId}
+	</delete>
+	
+	<insert id="insertRelation" parameterType="site.ilemon.rightsmanagement.entity.PermissionInput">
+		insert into t_role_permissions
+		values
+  		<foreach collection="codes" item="code" index="index" separator="," > 
+        	(#{roleId},#{code}) 
+    	</foreach> 
+	</insert>
+	
 </mapper>

@@ -12,11 +12,22 @@
   text-align: right;
   margin-right: 10px;
 }
+.left {
+  text-align: left;
+  margin-right: 10px;
+}
 
 </style>
 </head>
 <body>
 	<div th:include="header :: head"></div>
+	<div class="left">
+		<span th:text = "${users.startRow+1}"></span>
+		<span>➝</span>
+		<span th:text = "${users.endRow}"></span>
+		<span>/</span>
+		<span th:text = "${users.totalRecord}"></span>
+	</div>
 	<div class="right">
 		<form th:action="@{/user/redirectAddUser}" method = "get">
 			<button type="submit" class="btn btn-primary">新增用户</button>

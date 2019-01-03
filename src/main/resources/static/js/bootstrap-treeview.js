@@ -432,7 +432,6 @@
 	};
 
 	Tree.prototype.setCheckedState = function (node, state, options) {
-		alert("aaa");
 		if (state === node.state.checked) return;
 
 		if (state) {

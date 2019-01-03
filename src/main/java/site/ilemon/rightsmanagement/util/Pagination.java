@@ -18,6 +18,10 @@ public class Pagination<T>{
 	private boolean firstPage;
 	
 	private boolean lastPage;
+	
+	private Integer startRow;
+	
+	private Integer endRow;
 
 	public Pagination(Integer currentPage, Integer totalRecord, List<T> list) {
 		this.currentPage = currentPage;
@@ -83,9 +87,21 @@ public class Pagination<T>{
 	public void setLastPage(boolean lastPage) {
 		this.lastPage = lastPage;
 	}
-	
-	
-	
-	
+
+	public Integer getStartRow() {
+		return startRow;
+	}
+
+	public void setStartRow(Integer startRow) {
+		this.startRow = startRow;
+	}
+
+	public Integer getEndRow() {
+		return endRow;
+	}
+
+	public void setEndRow(Integer endRow) {
+		this.endRow = endRow;
+	}
 	
 }

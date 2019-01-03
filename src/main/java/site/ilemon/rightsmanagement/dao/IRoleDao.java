@@ -1,6 +1,7 @@
 package site.ilemon.rightsmanagement.dao;
 import java.util.List;
 
+import site.ilemon.rightsmanagement.entity.PermissionInput;
 import site.ilemon.rightsmanagement.entity.Role;
 import site.ilemon.rightsmanagement.util.SearchCondition;
 
@@ -14,5 +15,9 @@ public interface IRoleDao {
     public List<Role> listRole(SearchCondition searchCondition);
     
     public Integer countRole(SearchCondition searchCondition);
+    
+    public Integer deleteRelation(int roleId);
+    
+    public Integer insertRelation(PermissionInput param);
 
 }

@@ -6,9 +6,8 @@
 </head>
 <body>
 	<div th:include="header :: head"></div>
-	<h2>welcome!</h2>
+	<script src="/js/echarts.js"></script>
 	<div id="container" style="height: 400px"></div>
-    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
 	<script th:inline="javascript">
 	    var message = [[${list}]];
 	    console.log(message);
