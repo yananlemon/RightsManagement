@@ -1,5 +1,6 @@
 package site.ilemon.rightsmanagement.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Pagination<T>{
@@ -13,7 +14,9 @@ public class Pagination<T>{
 	
 	private List<T> list;
 	
-	private Integer pageCount = new Integer(10);
+	private Integer pageSize = new Integer(10);
+	
+	private List<Integer> pageSizes = new ArrayList<Integer>();
 	
 	private boolean firstPage;
 	
@@ -23,13 +26,29 @@ public class Pagination<T>{
 	
 	private Integer endRow;
 
-	public Pagination(Integer currentPage, Integer totalRecord, List<T> list) {
+	public Pagination(Integer currentPage, Integer totalRecord, Integer pageSize,List<T> list) {
 		this.currentPage = currentPage;
 		this.totalRecord = totalRecord;
-		this.totalPage = totalRecord % pageCount == 0 ? totalRecord / pageCount : totalRecord / pageCount + 1;
+		this.pageSize = pageSize;
+		this.totalPage = totalRecord % pageSize == 0 ? totalRecord / pageSize : totalRecord / pageSize + 1;
 		this.list = list;
 		this.firstPage = currentPage == 1? true: false;
 		this.lastPage = currentPage == totalPage? true: false;
+		this.pageSizes.add(10);
+		this.pageSizes.add(20);
+		this.pageSizes.add(50);
+	}
+	
+	public Pagination(Integer currentPage, Integer totalRecord,List<T> list) {
+		this.currentPage = currentPage;
+		this.totalRecord = totalRecord;
+		this.totalPage = totalRecord % pageSize == 0 ? totalRecord / pageSize : totalRecord / pageSize + 1;
+		this.list = list;
+		this.firstPage = currentPage == 1? true: false;
+		this.lastPage = currentPage == totalPage? true: false;
+		this.pageSizes.add(10);
+		this.pageSizes.add(20);
+		this.pageSizes.add(50);
 	}
 
 	public Integer getCurrentPage() {
@@ -64,12 +83,12 @@ public class Pagination<T>{
 		this.list = list;
 	}
 
-	public Integer getPageCount() {
-		return pageCount;
+	public Integer getPageSize() {
+		return pageSize;
 	}
 
-	public void setPageCount(Integer pageCount) {
-		this.pageCount = pageCount;
+	public void setPageSize(Integer pageSize) {
+		this.pageSize = pageSize;
 	}
 
 	public boolean isFirstPage() {
@@ -102,6 +121,14 @@ public class Pagination<T>{
 
 	public void setEndRow(Integer endRow) {
 		this.endRow = endRow;
+	}
+
+	public List<Integer> getPageSizes() {
+		return pageSizes;
+	}
+
+	public void setPageSizes(List<Integer> pageSizes) {
+		this.pageSizes = pageSizes;
 	}
 	
 }

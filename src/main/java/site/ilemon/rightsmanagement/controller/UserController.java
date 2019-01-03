@@ -23,8 +23,10 @@ public class UserController {
 	private IUserService service;
 	
 	@GetMapping("/users")
-	public String listUser(@RequestParam(value="currentPage",defaultValue = "1") Integer currentPage,Model model){
-		SearchCondition condition = new SearchCondition(currentPage);
+	public String listUser(@RequestParam(value="currentPage",defaultValue = "1") Integer currentPage,
+			@RequestParam(value="pageSize",defaultValue = "10") Integer pageSize,
+			Model model){
+		SearchCondition condition = new SearchCondition(currentPage,pageSize);
 		Pagination<User> users =service.listUser(condition);
 		model.addAttribute("users", users);
 		return "userlist";

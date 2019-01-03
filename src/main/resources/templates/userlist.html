@@ -9,30 +9,38 @@
   text-align: center;
 }
 .right {
+	display:inline;
   text-align: right;
   margin-right: 10px;
+  float: right;
 }
 .left {
+	display:inline;
   text-align: left;
-  margin-right: 10px;
+  margin-left: 10px;
+  float: left;
 }
 
 </style>
 </head>
 <body>
 	<div th:include="header :: head"></div>
+	<form id="pageForm" th:action="@{/user/users}" method="get">
+		<input type="hidden" id="currentPage" name="currentPage" th:value="${users.currentPage}"/>
+		<input type="hidden" id="pageSize" name="pageSize" th:value="${users.pageSize}"/>
+	</form>
 	<div class="left">
-		<span th:text = "${users.startRow+1}"></span>
-		<span>➝</span>
-		<span th:text = "${users.endRow}"></span>
-		<span>/</span>
-		<span th:text = "${users.totalRecord}"></span>
+		显示<span th:text = "${users.totalRecord}"></span>条中的第
+		<span th:text = "${users.startRow+1}"></span>条
+		<span>到第</span>
+		<span th:text = "${users.endRow}"></span>条		
 	</div>
 	<div class="right">
-		<form th:action="@{/user/redirectAddUser}" method = "get">
+		<!-- <form th:action="@{/user/redirectAddUser}" method = "get">
 			<button type="submit" class="btn btn-primary">新增用户</button>
-		</form>
-	
+		</form> -->
+	<button type="submit" class="btn btn-primary">新增用户</button>
+		
 	</div>
 	<div style="margin-left: 10px;margin-right: 10px;">
 		<table class="table table-bordered" >
@@ -58,30 +66,48 @@
 		</tbody>
 	</table>
 	</div>
-	
-	<div class="center">
+	<div class="left">
+		每页显示
+		<select class="form-control" id ="pageSizeSelect">
+			<option th:each="pageSize:${users.pageSizes}" th:text="${pageSize}" th:value="${pageSize}" th:if="${pageSize } == ${users.pageSize}" th:selected="selected"></option>
+			<option th:each="pageSize:${users.pageSizes}" th:text="${pageSize}" th:value="${pageSize}" th:if="${pageSize } != ${users.pageSize}"></option>
+		</select>
+		条
+	</div>
+	<div class="right">
 		<nav aria-label="...">
 		<ul class="pagination justify-content-center pagination-lg">
 		 	<li th:class="${users.firstPage} ? 'disabled':''" style="display:inline">
-                <span th:if="${users.firstPage}">←←首页</span>
-                <a th:if="${not users.firstPage}" th:href="@{'users?currentPage=1'}">←首页</a>
+                <span th:if="${users.firstPage}">←首页</span>
+                <a th:if="${not users.firstPage}" th:href="@{'users?currentPage=1'+'&pageSize='+${users.pageSize}}">←首页</a>
             </li>
 		    <li class="page-item" th:each="i : ${#numbers.sequence(1,users.totalPage)}"
 		    th:class="(${i}==${users.currentPage})? 'active' : ''" style="display:inline">
 		    	<span th:if='${i}==${users.currentPage}' th:text='${i}'></span>
-                    <a th:if='${i}!=${users.currentPage}' th:href="@{'users?currentPage=' + ${i}}">
+                    <a th:if='${i}!=${users.currentPage}' th:href="@{'users?currentPage=' + ${i} +'&pageSize='+${users.pageSize}}">
                         <span th:text='${i}'></span>
                     </a>
 		    </li>
 		    <li th:class="${users.lastPage} ? 'disabled':''" style="display:inline">
                 <span th:if="${users.lastPage}">尾页➝</span>
-                <a th:if="${not users.lastPage}" th:href="@{'users?currentPage=' + ${users.totalPage}}">尾页➝</a>
+                <a th:if="${not users.lastPage}" th:href="@{'users?currentPage=' + ${users.totalPage}+'&pageSize='+${users.pageSize}}">尾页➝</a>
             </li>
 	  </ul>
 	</nav>
 	</div>
 	
-
+	<script type="text/javascript">
+		
+	$("#pageSizeSelect").change(function(){
+		//var currentPage = $("#currentPage").val();
+		var pageSize = $("#pageSizeSelect").val();
+		$("#pageSize").val(pageSize);
+		//var newUrl = 'users?currentPage='+currentPage+'&pageSize='+pageSize;    //设置新提交地址
+        //$("#pageForm").attr('action',newUrl); 
+		$("#pageForm").submit();
+	});
+	
+	</script>
 	
 </body>
 </html>

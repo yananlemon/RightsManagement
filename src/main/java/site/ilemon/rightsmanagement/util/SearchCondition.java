@@ -13,13 +13,25 @@ public class SearchCondition {
 	private Integer endRow;
 	
 	
-
 	public SearchCondition(int currPage) {
 		this.currPage = currPage;
-		this.startRow = currPage == 1 ? 0 : (currPage-1)*(pageSize);
+		this.startRow = currPage == 1 ? 0 : (currPage-1)*(this.pageSize);
+		this.endRow = pageSize;
+	}
+	public SearchCondition(int currPage,int pageSize) {
+		this.currPage = currPage;
+		this.pageSize = pageSize;
+		this.startRow = currPage == 1 ? 0 : (currPage-1)*(this.pageSize);
 		this.endRow = pageSize;
 	}
 
+	
+	public Integer getPageSize() {
+		return pageSize;
+	}
+	public void setPageSize(Integer pageSize) {
+		this.pageSize = pageSize;
+	}
 	public String getSearchKeyword() {
 		return searchKeyword;
 	}
