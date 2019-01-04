@@ -27,6 +27,7 @@ public class SystemConfig implements WebMvcConfigurer{
 		registry.addResourceHandler("/js/*").addResourceLocations("classpath:/static/js/");
 		registry.addResourceHandler("/images/*").addResourceLocations("classpath:/static/images/");
 		registry.addResourceHandler("/fonts/*").addResourceLocations("classpath:/static/fonts/");
+		registry.addResourceHandler("/*.JPG").addResourceLocations("classpath:/static/");
 	}
 	
 	

@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import site.ilemon.rightsmanagement.entity.Role;
 import site.ilemon.rightsmanagement.entity.User;
+import site.ilemon.rightsmanagement.service.IRoleService;
 import site.ilemon.rightsmanagement.service.IUserService;
 import site.ilemon.rightsmanagement.util.Pagination;
 import site.ilemon.rightsmanagement.util.SearchCondition;
@@ -22,13 +24,18 @@ public class UserController {
 	@Autowired
 	private IUserService service;
 	
+	@Autowired
+	private IRoleService roleService;
+	
 	@GetMapping("/users")
 	public String listUser(@RequestParam(value="currentPage",defaultValue = "1") Integer currentPage,
 			@RequestParam(value="pageSize",defaultValue = "10") Integer pageSize,
 			Model model){
 		SearchCondition condition = new SearchCondition(currentPage,pageSize);
 		Pagination<User> users =service.listUser(condition);
+		Pagination<Role> roles =roleService.listRole(condition);
 		model.addAttribute("users", users);
+		model.addAttribute("roles", roles);
 		return "userlist";
 	}
 	
