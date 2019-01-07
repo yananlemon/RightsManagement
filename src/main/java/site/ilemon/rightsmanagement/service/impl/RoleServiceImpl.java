@@ -14,6 +14,7 @@ import site.ilemon.rightsmanagement.entity.PermissionInput;
 import site.ilemon.rightsmanagement.entity.PermissionMenu;
 import site.ilemon.rightsmanagement.entity.Role;
 import site.ilemon.rightsmanagement.entity.State;
+import site.ilemon.rightsmanagement.entity.UserRoleInput;
 import site.ilemon.rightsmanagement.service.IRoleService;
 import site.ilemon.rightsmanagement.util.Pagination;
 import site.ilemon.rightsmanagement.util.SearchCondition;
@@ -74,9 +75,21 @@ public class RoleServiceImpl implements IRoleService {
 	public Pagination<Role> listRole(SearchCondition searchCondition) {
 		try {
 			Integer count = roleDao.countRole(searchCondition);
-			List<Role> users = roleDao.listRole(searchCondition);
+			List<Role> users = roleDao.listRoleByCondition(searchCondition);
 			Pagination<Role> rs = new Pagination<Role>(searchCondition.getCurrPage(),count,users);
 			return rs;
+
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Override
+	public List<Role> listRole() {
+		try {
+			List<Role> roles = roleDao.listRole();
+			return roles;
 
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -97,5 +110,23 @@ public class RoleServiceImpl implements IRoleService {
 		rs = 1;
 		return rs;
 
+	}
+
+
+	@Override
+	public List<Role> listRoleByUserId(int userId) {
+		return roleDao.listRoleByUserId(userId);
+	}
+	
+	public int saveUserRole(UserRoleInput param)throws Exception{
+		int rs = 0;
+		int deleteAff = roleDao.deleteUserRoleRelation(param.getUserId());
+		if( deleteAff < 0 )
+			throw new Exception();
+		int insertAff = roleDao.insertUserRoleRelation(param);
+		if( insertAff < 0 )
+			throw new Exception();
+		rs = 1;
+		return rs;
 	}
 }

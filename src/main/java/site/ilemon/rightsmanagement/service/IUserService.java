@@ -1,5 +1,6 @@
 package site.ilemon.rightsmanagement.service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ public interface IUserService {
 
 	public User getUserByName(String username);
 	
-	public List<Permission> listPermissionOfUser(int userId);
+	public HashSet<Permission> listPermissionOfUser(int userId);
 	
 	 public List<Map<String,Object>> getFreqOfCreateUser();
 }

@@ -1,6 +1,7 @@
 package site.ilemon.rightsmanagement.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class AppUserServiceImpl implements UserDetailsService{
 		UserDetails userDetails =service.getUserByName(username);
 		if (userDetails != null) {
 			int userId = ((User)userDetails).getId();
-			List<Permission> permissions = service.listPermissionOfUser(userId);
+			HashSet<Permission> permissions = service.listPermissionOfUser(userId);
 			List<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
 			for (Permission permission : permissions) {
 				if (permission != null && permission.getPermissionCode()!=null) {

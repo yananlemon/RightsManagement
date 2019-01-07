@@ -1,5 +1,6 @@
 package site.ilemon.rightsmanagement.service.impl;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Service;
 import site.ilemon.rightsmanagement.dao.IPermissionDao;
 import site.ilemon.rightsmanagement.dao.IUserDao;
 import site.ilemon.rightsmanagement.entity.Permission;
+import site.ilemon.rightsmanagement.entity.Role;
 import site.ilemon.rightsmanagement.entity.User;
+import site.ilemon.rightsmanagement.service.IRoleService;
 import site.ilemon.rightsmanagement.service.IUserService;
 import site.ilemon.rightsmanagement.util.Pagination;
 import site.ilemon.rightsmanagement.util.SearchCondition;
@@ -28,8 +31,16 @@ public class UserServiceImpl implements IUserService {
 	@Autowired
     private IPermissionDao permissionDao;
 	
-	public List<Permission> listPermissionOfUser(int userId){
-		return permissionDao.listPermissionsByUserId(userId);
+	@Autowired
+    private IRoleService roleService;
+	
+	public HashSet<Permission> listPermissionOfUser(int userId){
+		HashSet<Permission> set = new HashSet<Permission>();
+		List<Role> roles = roleService.listRoleByUserId(userId);
+		for(Role role:roles){
+			set.addAll(permissionDao.listPermissionsByRoleId(role.getId()));
+		}
+		return set;
 	}
 
 	/**

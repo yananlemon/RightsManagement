@@ -1,5 +1,6 @@
 package site.ilemon.rightsmanagement.controller;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class IndexController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if( auth != null && auth.getPrincipal() instanceof User){
 			int userId = ((User)auth.getPrincipal()).getId();
-			List<Permission> permissions = service.listPermissionOfUser(userId);
+			HashSet<Permission> permissions = service.listPermissionOfUser(userId);
 			request.getSession().setAttribute("permissions", permissions);
 			request.getSession().setAttribute("username", ((User)auth.getPrincipal()).getUsername());
 			request.getSession().setAttribute("currUser", ((User)auth.getPrincipal()));

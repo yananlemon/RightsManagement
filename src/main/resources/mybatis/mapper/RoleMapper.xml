@@ -13,7 +13,7 @@
 		
 	</resultMap>
 	
-	<select id="listRole" resultMap="roleMap" parameterType="site.ilemon.rightsmanagement.util.SearchCondition">
+	<select id="listRoleByCondition" resultMap="roleMap" parameterType="site.ilemon.rightsmanagement.util.SearchCondition">
 		select 	* from t_role
 		<where>
 			<if test="searchKeyword != null">
@@ -21,6 +21,15 @@
 			</if>
 		</where>
 		limit #{startRow},#{endRow}
+	</select>
+	
+	<select id="listRole" resultMap="roleMap">
+		select 	* from t_role
+	</select>
+	
+	
+	<select id="listRoleByUserId" resultMap="roleMap">
+		select 	* from t_role where id in (select role_id from t_user_role where user_id = #{roleId})
 	</select>
 	
 	<select id="countRole" 
@@ -43,6 +52,18 @@
 		values
   		<foreach collection="codes" item="code" index="index" separator="," > 
         	(#{roleId},#{code}) 
+    	</foreach> 
+	</insert>
+	
+	<delete id="deleteUserRoleRelation">
+		delete from t_user_role where user_id = #{userId}
+	</delete>
+	
+	<insert id="insertUserRoleRelation" parameterType="site.ilemon.rightsmanagement.entity.UserRoleInput">
+		insert into t_user_role(user_id,role_id)
+		values
+  		<foreach collection="roles" item="roleId" index="index" separator="," > 
+        	(#{userId},#{roleId}) 
     	</foreach> 
 	</insert>
 	

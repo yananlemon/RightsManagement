@@ -23,14 +23,17 @@
 
  .clearfix:after {content:"."; display:block; height:0; visibility:hidden; clear:both; }
   .clearfix { *zoom:1; }
-
 </style>
+<meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body>
 	<div th:include="header :: head"></div>
+	
 	<form id="pageForm" th:action="@{/user/users}" method="get">
 		<input type="hidden" id="currentPage" name="currentPage" th:value="${users.currentPage}"/>
 		<input type="hidden" id="pageSize" name="pageSize" th:value="${users.pageSize}"/>
+		<input type="hidden" id="userId" name="userId"/>
 	</form>
 	<div class="left">
 		显示<span th:text = "${users.totalRecord}"></span>条中的第
@@ -113,32 +116,36 @@
 				</h4>
 			</div>
 			<div class="modal-body">
-				<div class="left clearfix" style="border: 2px">
-					<div class="list-group ">
-					  <a href="#" class="list-group-item active">First item</a>
-					  <a href="#" class="list-group-item">Second item</a>
-					  <a href="#" class="list-group-item">Third item</a>
-					</div>
-				</div>
-				
-				<div class="right clearfix" style="border: 2px">
-					<div class="list-group">
-					  <a href="#" class="list-group-item active">First item</a>
-					  <a href="#" class="list-group-item">Second item</a>
-					  <a href="#" class="list-group-item">Third item</a>
-					</div>
+				<div class="row">
+				    <div class="col-xs-5">
+				        <select name="from[]" id="undo_redo" class="form-control" size="13" multiple="multiple">
+				        </select>
+				    </div>
+				    
+				    <div class="col-xs-2">
+				        <button type="button" id="undo_redo_undo" class="btn btn-primary btn-block">undo</button>
+				        <button type="button" id="undo_redo_rightAll" class="btn btn-default btn-block"><i class="glyphicon glyphicon-forward"></i></button>
+				        <button type="button" id="undo_redo_rightSelected" class="btn btn-default btn-block"><i class="glyphicon glyphicon-chevron-right"></i></button>
+				        <button type="button" id="undo_redo_leftSelected" class="btn btn-default btn-block"><i class="glyphicon glyphicon-chevron-left"></i></button>
+				        <button type="button" id="undo_redo_leftAll" class="btn btn-default btn-block"><i class="glyphicon glyphicon-backward"></i></button>
+				        <button type="button" id="undo_redo_redo" class="btn btn-warning btn-block">redo</button>
+				    </div>
+				    
+				    <div class="col-xs-5">
+				        <select name="to[]" id="undo_redo_to" class="form-control" size="13" multiple="multiple"></select>
+				    </div>
 				</div>
 			</div>
 			<div class="modal-footer" style="clear:both">
 				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
 				</button>
-				<button type="button" class="btn btn-primary">
+				<button id="saveUserRolesBtn" type="button" class="btn btn-primary">
 					提交更改
 				</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal -->
-	
+	<script type="text/javascript" src="/js/multiselect.min.js"></script>
 	<script type="text/javascript">
 		
 	$("#pageSizeSelect").change(function(){
@@ -150,20 +157,107 @@
 	
 	// when DOM is ready
 	$(document).ready(function () {
-
-	     // Attach Button click event listener 
-	    $("#button1").click(function(){
-
-	         // show Modal
-	         $('#myModal').modal('show');
-	    });
-	     
+		$('#undo_redo').multiselect();
+		$("#saveUserRolesBtn").bind("click",function(){
+			var array = new Array();
+		    $("#undo_redo_to option").each(function(){
+	          	var value = $(this).val();   //获取option值   
+	          	array.push(value);
+		    });
+			if(array.length == 0){
+				alert("所选角色不能为空");
+				return;
+			}
+			for(i in array){
+				alert(array[i]);
+			}
+			var data = new Object();
+			data.userId = $("#userId").val();
+			data.roles = array;
+			$.ajax({
+				url:'/role/updateUserRole',
+				type:'PUT',
+				contentType: "application/json; charset=utf-8",
+		        data: JSON.stringify(data),
+		        dataType: "json",
+		        beforeSend: function(request) {
+		        	var token = $("meta[name='_csrf']").attr("content");
+		        	var header = $("meta[name='_csrf_header']").attr("content");
+					request.setRequestHeader(header, token);
+                },
+		        success: function (data) {
+		        	alert("修改成功");
+		        	var roleId = data.roleId;
+	                window.location.href="permission?roleId="+roleId;
+		        },
+		        error: function (message) {
+		            alert("error");
+		        }
+			});
+		});
 	   
 	});
+	var alreadyRoles = new Array();
 	 function showModel(id){
-		alert(id);
 		$('#myModel').modal('show');
+		$("#userId").val(id);
+		$.ajax({
+			url:'/role/getRolesByUserId?userId='+id,
+			type:'GET',
+			contentType: "application/json; charset=utf-8",
+	        dataType: "json",
+	        async:false, 
+	        success: function (data) {
+	        	alreadyRoles = data;
+	        	var htmlOption = "";
+	        	for( i in alreadyRoles){
+	        		htmlOption += "<option value=\""+alreadyRoles[i].id+"\">"+alreadyRoles[i].roleName+"</option>";
+	        	}
+	        	$("#undo_redo_to").html(htmlOption);
+	        },
+	        error: function (message) {
+	            alert("error");
+	        }
+		});
+		$.ajax({
+			url:'/role/role',
+			type:'GET',
+			contentType: "application/json; charset=utf-8",
+	        dataType: "json",
+	        async:false, 
+	        success: function (data) {
+	        	var htmlOption = "";
+	        	
+	        	var nArray = null;
+	        	for( i in alreadyRoles){
+	        		if(nArray == null)
+	        			nArray = contains(data,alreadyRoles[i]);
+	        		else
+	        			nArray = contains(nArray,alreadyRoles[i]);
+	        	}
+	        	if( nArray == null)
+	        		nArray = data;
+				for( i in nArray){// 1,2,3,4,5
+   					htmlOption += "<option value=\""+nArray[i].id+"\">"+nArray[i].roleName+"</option>";		
+					        		
+	        	}
+	        	$("#undo_redo").html(htmlOption);
+	        },
+	        error: function (message) {
+	            alert("error");
+	        }
+		});
 	}
+	 
+	function contains(array,val){
+		var newArray = new Array();
+		for( i in array){
+			if( array[i].id != val.id)
+				newArray.push(array[i]);
+		}
+		return newArray;
+	}
+	
 	</script>
 	
 </body>
