@@ -59,10 +59,15 @@ public class UserServiceImpl implements IUserService {
     public int update(User user) {
         return 0;
     }
-
+    
     public Pagination<User> listUser(SearchCondition searchCondition) {
     	try {
     		Integer count = userDao.countUser(searchCondition);
+    		if( count < searchCondition.getPageSize() && searchCondition.getCurrPage().intValue() > 1){
+    			searchCondition.setCurrPage(1);
+    			searchCondition.setStartRow(searchCondition.getCurrPage() == 1 ? 0 : (searchCondition.getCurrPage()-1)*(searchCondition.getPageSize()));
+    		}
+    		//count % searchCondition.getPageSize()
     		List<User> users = userDao.listUser(searchCondition);
     		Pagination<User> rs = new Pagination<User>(searchCondition.getCurrPage(),count,searchCondition.getPageSize(),users);
     		rs.setStartRow(searchCondition.getStartRow());
